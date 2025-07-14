@@ -1,3 +1,5 @@
 .terraform/
 *.pem
 secrets.yml
+terraform/*.tfstate
+terraform/*.tfstate.backup
