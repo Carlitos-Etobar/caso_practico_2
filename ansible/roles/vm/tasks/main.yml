@@ -6,20 +6,18 @@
     state: present
     update_cache: true
 
-- name: Añadir repositorio de Podman
-  apt_repository:
-    repo: "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_20.04/ /"
-    filename: "devel_kubic_libcontainers_stable"
+- name: Añadir clave GPG del repositorio de Podman
+  ansible.builtin.apt_key:
+    url: https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_20.04/Release.key
     state: present
 
-- name: Añadir clave GPG para libcontainers
-  get_url:
-    url: "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_20.04/Release.key"
-    dest: "/etc/apt/trusted.gpg.d/libcontainers.gpg"
-    mode: '0644'
+- name: Añadir repositorio de Podman
+  ansible.builtin.apt_repository:
+    repo: deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_20.04/ /
+    state: present
 
-- name: Actualizar caché APT
-  apt:
+- name: Actualizar apt
+  ansible.builtin.apt:
     update_cache: yes
 
 - name: Instalar Podman
@@ -45,3 +43,25 @@
     ports:
       - "443:443"
     restart_policy: always
+
+- name: Generar unidad systemd para el contenedor
+  command:
+    cmd: podman generate systemd --name webapp --files --restart-policy always
+    chdir: /root
+    creates: /root/container-webapp.service
+
+- name: Mover unidad systemd a /etc/systemd/system
+  copy:
+    src: /root/container-webapp.service
+    dest: /etc/systemd/system/container-webapp.service
+    remote_src: yes
+
+- name: Recargar systemd
+  systemd:
+    daemon_reload: yes
+
+- name: Habilitar y arrancar el contenedor como servicio
+  systemd:
+    name: container-webapp.service
+    enabled: yes
+    state: started
