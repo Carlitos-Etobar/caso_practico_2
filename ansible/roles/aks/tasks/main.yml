@@ -1,0 +1,36 @@
+- name: Crear namespace para la app
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Namespace
+      metadata:
+        name: webapp-persistente
+
+- name: Crear secret de acceso al ACR
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: acr-secret
+        namespace: webapp-persistente
+      type: kubernetes.io/dockerconfigjson
+      data:
+        .dockerconfigjson: "{{ dockerconfigjson_b64 }}"
+
+- name: Crear PersistentVolumeClaim
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'pvc.yml') }}"
+    namespace: webapp-persistente
+
+- name: Desplegar app con volumen
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'deployment.yml') }}"
+    namespace: webapp-persistente
+
+- name: Crear LoadBalancer Service
+  kubernetes.core.k8s:
+    definition: "{{ lookup('template', 'service.yml') }}"
+    namespace: webapp-persistente

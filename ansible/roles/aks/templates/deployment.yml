@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-persistente
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+      - name: webapp
+        image: acrpractico2demo.azurecr.io/webapp-persistente:casopractico2
+        volumeMounts:
+        - mountPath: /data
+          name: app-volume
+        ports:
+        - containerPort: 443
+      volumes:
+      - name: app-volume
+        persistentVolumeClaim:
+          claimName: webapp-pvc
+      imagePullSecrets:
+        - name: acr-secret
