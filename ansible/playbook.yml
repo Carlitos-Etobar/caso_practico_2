@@ -1,5 +1,5 @@
 - name: Subir imágenes a ACR
-  hosts: localhost
+  hosts: local
   vars_files:
     - secrets.yml
   roles:
@@ -14,7 +14,7 @@
     - vm
 
 - name: Desplegar app en AKS
-  hosts: localhost
+  hosts: local
   vars_files:
     - secrets.yml
   roles:
