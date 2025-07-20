@@ -54,7 +54,7 @@
   containers.podman.podman_generate_systemd:
     name: webapp
     restart_policy: always
-    use_name: true
+    use_names: true
     dest: /etc/systemd/system
   become: true
   become_user: root
