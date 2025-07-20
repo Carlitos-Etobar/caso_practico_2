@@ -41,13 +41,21 @@ resource "azurerm_network_security_group" "vm_nsg" {
   }
 }
 
+resource "azurerm_network_interface_security_group_association" "vm_nic_nsg" {
+  network_interface_id      = azurerm_network_interface.vm_nic.id
+  network_security_group_id = azurerm_network_security_group.vm_nsg.id
+}
+
 resource "azurerm_linux_virtual_machine" "vm" {
-  name                  = "vm-casopractico2"
-  location              = var.location
-  resource_group_name   = var.resource_group_name
-  size                  = "Standard_B1s"
-  admin_username        = "azureuser"
-  network_interface_ids = [azurerm_network_interface.vm_nic.id]
+  name                = "vm-casopractico2"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+  size                = "Standard_B1s"
+  admin_username      = "azureuser"
+
+  network_interface_ids = [
+    azurerm_network_interface.vm_nic.id
+  ]
 
   admin_ssh_key {
     username   = "azureuser"

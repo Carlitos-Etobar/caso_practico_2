@@ -1,0 +1,43 @@
+- name: Instalar dependencias previas
+  apt:
+    name:
+      - software-properties-common
+      - uidmap
+    state: present
+    update_cache: true
+
+- name: Añadir repositorio de Podman
+  shell: |
+    . /etc/os-release
+    echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+    curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/Release.key | gpg --dearmor -o /etc/apt/trusted.gpg.d/libcontainers.gpg
+  args:
+    executable: /bin/bash
+
+- name: Actualizar caché tras añadir repositorio
+  apt:
+    update_cache: yes
+
+- name: Instalar Podman
+  apt:
+    name: podman
+    state: present
+
+- name: Login en ACR
+  containers.podman.podman_login:
+    registry: acrpractico2demo.azurecr.io
+    username: "{{ acr_username }}"
+    password: "{{ acr_password }}"
+
+- name: Descargar imagen de la aplicación
+  containers.podman.podman_image:
+    name: acrpractico2demo.azurecr.io/webapp:casopractico2
+
+- name: Ejecutar contenedor
+  containers.podman.podman_container:
+    name: webapp
+    image: acrpractico2demo.azurecr.io/webapp:casopractico2
+    state: started
+    ports:
+      - "443:443"
+    restart_policy: always

@@ -1,0 +1,7 @@
+- name: Desplegar aplicación web con Podman en VM
+  hosts: vm
+  become: true
+  vars_files:
+    - secrets.yml
+  roles:
+    - vm
