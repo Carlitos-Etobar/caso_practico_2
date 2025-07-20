@@ -30,10 +30,14 @@
     registry: acrpractico2demo.azurecr.io
     username: "{{ acr_username }}"
     password: "{{ acr_password }}"
+  become: true
+  become_user: root
 
 - name: Descargar imagen de la app
   containers.podman.podman_image:
     name: acrpractico2demo.azurecr.io/webapp:casopractico2
+  become: true
+  become_user: root
 
 - name: Lanzar contenedor
   containers.podman.podman_container:
@@ -43,25 +47,28 @@
     ports:
       - "443:443"
     restart_policy: always
+  become: true
+  become_user: root
 
 - name: Generar unidad systemd para el contenedor
-  command:
-    cmd: podman generate systemd --name webapp --files --restart-policy always
-    chdir: /root
-    creates: /root/container-webapp.service
-
-- name: Mover unidad systemd a /etc/systemd/system
-  copy:
-    src: /root/container-webapp.service
-    dest: /etc/systemd/system/container-webapp.service
-    remote_src: yes
+  containers.podman.podman_generate_systemd:
+    name: webapp
+    restart_policy: always
+    use_name: true
+    dest: /etc/systemd/system
+  become: true
+  become_user: root
 
 - name: Recargar systemd
   systemd:
     daemon_reload: yes
+  become: true
+  become_user: root
 
 - name: Habilitar y arrancar el contenedor como servicio
   systemd:
     name: container-webapp.service
     enabled: yes
     state: started
+  become: true
+  become_user: root
