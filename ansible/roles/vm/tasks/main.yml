@@ -7,14 +7,18 @@
     update_cache: true
 
 - name: Añadir repositorio de Podman
-  shell: |
-    . /etc/os-release
-    echo "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/ /" | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
-    curl -L https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${VERSION_ID}/Release.key | gpg --dearmor -o /etc/apt/trusted.gpg.d/libcontainers.gpg
-  args:
-    executable: /bin/bash
+  apt_repository:
+    repo: "deb https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_20.04/ /"
+    filename: "devel_kubic_libcontainers_stable"
+    state: present
 
-- name: Actualizar caché tras añadir repositorio
+- name: Añadir clave GPG para libcontainers
+  get_url:
+    url: "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_20.04/Release.key"
+    dest: "/etc/apt/trusted.gpg.d/libcontainers.gpg"
+    mode: '0644'
+
+- name: Actualizar caché APT
   apt:
     update_cache: yes
 
@@ -29,11 +33,11 @@
     username: "{{ acr_username }}"
     password: "{{ acr_password }}"
 
-- name: Descargar imagen de la aplicación
+- name: Descargar imagen de la app
   containers.podman.podman_image:
     name: acrpractico2demo.azurecr.io/webapp:casopractico2
 
-- name: Ejecutar contenedor
+- name: Lanzar contenedor
   containers.podman.podman_container:
     name: webapp
     image: acrpractico2demo.azurecr.io/webapp:casopractico2
