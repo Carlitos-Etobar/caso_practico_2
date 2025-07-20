@@ -1,0 +1,19 @@
+- name: Login en ACR
+  containers.podman.podman_login:
+    registry: "acrpractico2demo.azurecr.io"
+    username: "{{ acr_username }}"
+    password: "{{ acr_password }}"
+
+- name: Subir imagen webapp
+  containers.podman.podman_image:
+    name: ./webapp
+    tag: casopractico2
+    push: true
+    repository: "acrpractico2demo.azurecr.i/webapp"
+
+- name: Subir imagen webapp-persistente
+  containers.podman.podman_image:
+    name: ./webapp-persistente
+    tag: casopractico2
+    push: true
+    repository: "acrpractico2demo.azurecr.i/webapp-persistente"
