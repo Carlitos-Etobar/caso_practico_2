@@ -29,6 +29,7 @@
   kubernetes.core.k8s:
     definition: "{{ lookup('template', 'deployment.yml') }}"
     namespace: webapp-persistente
+    force: true
 
 - name: Crear LoadBalancer Service
   kubernetes.core.k8s:

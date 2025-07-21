@@ -10,6 +10,9 @@ COPY nginx.key /etc/nginx/nginx.key
 # Copiamos configuración de nginx lista
 COPY default.conf /etc/nginx/conf.d/default.conf
 
+# Copiamos contenido inicial destinado al volumen persistente
+COPY images /usr/share/nginx/html/images
+
 # Instalamos utilidades necesarias para htpasswd
 RUN apk add --no-cache apache2-utils
 

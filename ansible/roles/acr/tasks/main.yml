@@ -10,6 +10,7 @@
     tag: casopractico2
     path: ../imagenes/webapp
     push: true
+    force: true
 
 - name: Subir imagen webapp-persistente
   containers.podman.podman_image:
@@ -17,3 +18,4 @@
     tag: casopractico2
     path: ../imagenes/webapp-persistente
     push: true
+    force: true
