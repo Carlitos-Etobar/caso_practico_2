@@ -14,28 +14,24 @@ spec:
     spec:
       initContainers:
       - name: init-content
-        image: acrpractico2demo.azurecr.io/webapp-persistente:casopractico2
-        imagePullPolicy: Always
-        command: ["/bin/sh", "-c"]
-        args: ["mkdir -p /mnt/data && if [ -d /usr/share/nginx/html/images ]; then cp -a /usr/share/nginx/html/images/. /mnt/data/; fi"]
+        image: busybox
+        command: ["sh", "-c"]
+        args: ["mkdir -p /mnt/data && chown -R 33:33 /mnt/data && chmod -R 755 /mnt/data"]
         volumeMounts:
         - name: app-volume
           mountPath: /mnt/data
-
       containers:
       - name: webapp
         image: acrpractico2demo.azurecr.io/webapp-persistente:casopractico2
         imagePullPolicy: Always
         ports:
-        - containerPort: 443
+        - containerPort: 80
         volumeMounts:
         - name: app-volume
-          mountPath: /usr/share/nginx/html/images
-
+          mountPath: /var/www/html/data
       volumes:
       - name: app-volume
         persistentVolumeClaim:
           claimName: webapp-pvc
-
       imagePullSecrets:
       - name: acr-secret
