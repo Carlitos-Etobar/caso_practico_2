@@ -1,3 +1,4 @@
+// Interfaz de red para la máquina virtual que se configuró en otro archivo
 resource "azurerm_network_interface" "vm_nic" {
   name                = "nic-casopractico2"
   location            = var.location
@@ -11,11 +12,13 @@ resource "azurerm_network_interface" "vm_nic" {
   }
 }
 
+// Grupo de seguridad de red para la VM
 resource "azurerm_network_security_group" "vm_nsg" {
   name                = "nsg-casopractico2"
   location            = var.location
   resource_group_name = var.resource_group_name
 
+  // Regla para permitir acceso SSH
   security_rule {
     name                       = "SSH"
     priority                   = 1001
@@ -28,6 +31,7 @@ resource "azurerm_network_security_group" "vm_nsg" {
     destination_address_prefix = "*"
   }
 
+  // Regla para permitir acceso HTTPS
   security_rule {
     name                       = "HTTPS"
     priority                   = 1002
@@ -41,11 +45,13 @@ resource "azurerm_network_security_group" "vm_nsg" {
   }
 }
 
+// Asociación de la interfaz de red con el grupo de seguridad
 resource "azurerm_network_interface_security_group_association" "vm_nic_nsg" {
   network_interface_id      = azurerm_network_interface.vm_nic.id
   network_security_group_id = azurerm_network_security_group.vm_nsg.id
 }
 
+// Máquina virtual en Azure
 resource "azurerm_linux_virtual_machine" "vm" {
   name                = "vm-casopractico2"
   location            = var.location
@@ -57,6 +63,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
     azurerm_network_interface.vm_nic.id
   ]
 
+  // Clave SSH para acceso seguro
   admin_ssh_key {
     username   = "azureuser"
     public_key = tls_private_key.ssh_key.public_key_openssh
@@ -67,6 +74,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
     storage_account_type = "Standard_LRS"
   }
 
+  // Imagen base de para la máquina virtual
   source_image_reference {
     publisher = "Canonical"
     offer     = "0001-com-ubuntu-server-focal"

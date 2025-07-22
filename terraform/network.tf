@@ -1,3 +1,4 @@
+// Recurso para la red virtual de Azure donde se desplegarán los distintos recursos
 resource "azurerm_virtual_network" "vm_vnet" {
   name                = "vnet-casopractico2"
   location            = var.location
@@ -9,6 +10,7 @@ resource "azurerm_virtual_network" "vm_vnet" {
   }
 }
 
+// Recurso para la subred dentro de la red virtual
 resource "azurerm_subnet" "vm_subnet" {
   name                 = "subnet-casopractico2"
   resource_group_name  = var.resource_group_name
@@ -16,6 +18,7 @@ resource "azurerm_subnet" "vm_subnet" {
   address_prefixes     = ["10.0.1.0/24"]
 }
 
+// Recurso para la IP pública asociada a la máquina virtual
 resource "azurerm_public_ip" "vm_ip" {
   name                = "ip-casopractico2"
   location            = var.location
@@ -29,6 +32,7 @@ resource "azurerm_public_ip" "vm_ip" {
   }
 }
 
+// Recurso para generar una clave SSH privada para acceso a la VM
 resource "tls_private_key" "ssh_key" {
   algorithm = "RSA"
   rsa_bits  = 4096

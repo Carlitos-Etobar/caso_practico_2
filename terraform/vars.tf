@@ -1,3 +1,4 @@
+// Las variables nombradas en otros archivos para ser usadas
 variable "location" {
   default     = "westeurope"
   description = "Ubicación de los recursos en Azure"

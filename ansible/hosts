@@ -1,8 +1,11 @@
+# Host remoto para despliegue en la maquina virtual de azure
 [vm]
 172.201.45.146 ansible_user=azureuser ansible_ssh_private_key_file=/home/ctoledano/.ssh/id_rsa_vm
 
+# Host local para tareas que se ejecutan en esta máquina
 [local]
 localhost ansible_connection=local
 
+# Variable global para todos los hosts
 [all:vars]
 dockerconfigjson_b64={{ lookup('file', 'dockerconfig.json') | b64encode }}

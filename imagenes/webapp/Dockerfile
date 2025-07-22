@@ -1,3 +1,4 @@
+# Imagen ligera de Nginx para servir contenido web
 FROM docker.io/library/nginx:alpine
 
 # Copiamos el contenido web

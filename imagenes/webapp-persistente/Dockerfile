@@ -1,3 +1,4 @@
+# Imagen PHP con Apache para servir contenido externo
 FROM docker.io/library/php:8.1-apache
 
 # Crear carpeta para los archivos subidos

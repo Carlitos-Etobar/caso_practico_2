@@ -1,17 +1,20 @@
+# Deployment de la aplicación web con volumen persistente en AKS
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: webapp-persistente
+  name: webapp-persistente  # Nombre del deployment
 spec:
-  replicas: 1
+  replicas: 1  # Número de réplicas del pod
   selector:
     matchLabels:
-      app: webapp
+      app: webapp  # Selector para asociar el deployment con los pods
   template:
     metadata:
       labels:
-        app: webapp
+        app: webapp  # Etiqueta del pod
     spec:
+      # Init container para preparar el volumen persistente (permisos y propietario)
       initContainers:
       - name: init-content
         image: busybox
@@ -22,16 +25,16 @@ spec:
           mountPath: /mnt/data
       containers:
       - name: webapp
-        image: acrpractico2demo.azurecr.io/webapp-persistente:casopractico2
-        imagePullPolicy: Always
+        image: acrpractico2demo.azurecr.io/webapp-persistente:casopractico2  # Imagen de la app
+        imagePullPolicy: Always  # Siempre intenta descargar la última imagen
         ports:
-        - containerPort: 80
+        - containerPort: 80  # Puerto expuesto por el contenedor
         volumeMounts:
         - name: app-volume
-          mountPath: /var/www/html/data
+          mountPath: /var/www/html/data  # Ruta donde se monta el volumen en el contenedor
       volumes:
       - name: app-volume
         persistentVolumeClaim:
-          claimName: webapp-pvc
+          claimName: webapp-pvc  # PVC asociado al volumen persistente
       imagePullSecrets:
-      - name: acr-secret
+      - name: acr-secret  # Secreto para acceder al ACR

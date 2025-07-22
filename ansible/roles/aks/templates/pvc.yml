@@ -1,10 +1,12 @@
+# PersistentVolumeClaim para la aplicación web
+
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: webapp-pvc
+  name: webapp-pvc  # Nombre del PVC
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteOnce  # Solo puede ser montado en modo lectura/escritura por un nodo a la vez
   resources:
     requests:
-      storage: 1Gi
+      storage: 1Gi  # Espacio solicitado para el volumen persistente
