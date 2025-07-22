@@ -38,12 +38,13 @@
     name: acrpractico2demo.azurecr.io/webapp:casopractico2
   become: true
   become_user: root
+  force: true
 
 - name: Lanzar contenedor
   containers.podman.podman_container:
     name: webapp
     image: acrpractico2demo.azurecr.io/webapp:casopractico2
-    state: started
+    state: restarted
     ports:
       - "443:443"
     restart_policy: always
